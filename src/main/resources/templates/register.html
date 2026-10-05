@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="card">
+    <h1>Register</h1>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+
+        <label for="username">Username</label>
+        <input type="text" id="username" th:field="*{username}" autocomplete="off">
+        <p class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</p>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}" autocomplete="off">
+        <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</p>
+
+        <!-- Passwords use plain name="" so they are never echoed back into the page -->
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+        <p class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</p>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword">
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p class="link">
+        Already have an account? <a th:href="@{/login}">Login</a>
+    </p>
+</div>
+
+</body>
+</html>
