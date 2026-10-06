@@ -43,6 +43,10 @@
 
     <p class="empty" th:if="${#lists.isEmpty(todos)}">No tasks yet. Add one above!</p>
 
+    <div class="home-actions">
+        <a th:href="@{/chat}" class="secondary-button">Open Chat</a>
+    </div>
+
     <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit">Logout</button>
     </form>

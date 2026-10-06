@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="card card-wide chat-card">
+
+    <div class="chat-header">
+        <h1>Chat Room</h1>
+        <a th:href="@{/home}" class="back-link">← Back</a>
+    </div>
+
+    <div id="messages" class="chat-messages" th:attr="data-me=${username}"></div>
+
+    <form id="send-form" class="chat-form" autocomplete="off">
+        <input type="text" id="message-input"
+               placeholder="Type a message..." maxlength="500">
+        <button type="submit">Send</button>
+    </form>
+
+</div>
+
+<script th:inline="none">
+    const container = document.getElementById('messages');
+    const me = container.dataset.me;
+    const form = document.getElementById('send-form');
+    const input = document.getElementById('message-input');
+
+    function render(messages) {
+        container.innerHTML = '';
+        for (const m of messages) {
+            const row = document.createElement('div');
+            row.className = 'chat-row' + (m.sender === me ? ' mine' : '');
+
+            const meta = document.createElement('div');
+            meta.className = 'chat-meta';
+
+            const sender = document.createElement('span');
+            sender.className = 'chat-sender';
+            sender.textContent = (m.sender === me ? 'You' : m.sender);
+
+            const time = document.createElement('span');
+            time.className = 'chat-time';
+            time.textContent = new Date(m.time).toLocaleTimeString([], {
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            meta.appendChild(sender);
+            meta.appendChild(time);
+
+            const body = document.createElement('div');
+            body.className = 'chat-body';
+            // textContent, not innerHTML → protects against XSS
+            body.textContent = m.content;
+
+            row.appendChild(meta);
+            row.appendChild(body);
+            container.appendChild(row);
+        }
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function loadMessages() {
+        try {
+            const res = await fetch('/chat/messages', { credentials: 'same-origin' });
+            if (!res.ok) return;
+            const messages = await res.json();
+            render(messages);
+        } catch (err) {
+            // silent — will retry on next poll
+        }
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+
+        await fetch('/chat/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
+            body: 'content=' + encodeURIComponent(text)
+        });
+
+        loadMessages();
+    });
+
+    loadMessages();
+    setInterval(loadMessages, 2000);   // poll every 2 seconds
+</script>
+
+</body>
+</html>
