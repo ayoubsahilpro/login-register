@@ -37,3 +37,30 @@ can follow the entire request flow.
 ---
 
 ## Project Structure
+
+login-register/
+├── src/main/java/com/example/loginregister/
+│ ├── LoginRegisterApplication.java
+│ ├── controller/
+│ │ ├── AuthController.java
+│ │ └── HomeController.java
+│ ├── model/
+│ │ ├── User.java
+│ │ └── Todo.java
+│ ├── repository/
+│ │ ├── UserRepository.java
+│ │ └── TodoRepository.java
+│ └── service/
+│ ├── UserService.java
+│ └── TodoService.java
+│
+├── src/main/resources/
+│ ├── templates/
+│ │ ├── login.html
+│ │ ├── register.html
+│ │ └── home.html
+│ ├── static/css/style.css
+│ └── application.properties
+│
+├── pom.xml
+└── README.md
