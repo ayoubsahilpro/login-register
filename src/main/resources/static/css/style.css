@@ -21,6 +21,10 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.card-wide {
+    width: 480px;
+}
+
 h1 {
     margin: 0 0 20px;
     font-size: 22px;
@@ -80,22 +84,125 @@ button:hover {
     margin: 18px 0 0;
     font-size: 14px;
     text-align: center;
-    color: palevioletred;
 }
 
 .link a {
     color: #4a90e2;
     text-decoration: none;
-    color: #d93025;
 }
 
 .link a:hover {
     text-decoration: underline;
-    color: #1a7f37;
 }
 
 .greeting {
     text-align: center;
     font-size: 16px;
     margin-bottom: 22px;
+}
+
+/* ---------------- To-Do list ---------------- */
+
+.todo-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.todo-form input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.todo-form button {
+    width: auto;
+    padding: 9px 18px;
+    flex-shrink: 0;
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+.todo-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.todo-list li:last-child {
+    border-bottom: none;
+}
+
+.todo-title {
+    flex: 1;
+    font-size: 15px;
+    word-break: break-word;
+}
+
+.todo-list li.done .todo-title {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.inline-form {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.checkbox-btn {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.checkbox-btn:hover {
+    background-color: #eaf2fc;
+}
+
+.todo-list li.done .checkbox-btn {
+    background-color: #4a90e2;
+    color: #ffffff;
+}
+
+.delete-btn {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    background-color: transparent;
+    color: #bbbbbb;
+    border: none;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: transparent;
+    color: #d93025;
+}
+
+.empty {
+    text-align: center;
+    color: #999999;
+    font-size: 14px;
+    margin: 18px 0;
+}
+
+.logout-form {
+    margin-top: 22px;
 }

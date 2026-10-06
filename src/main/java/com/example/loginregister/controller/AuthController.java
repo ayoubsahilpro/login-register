@@ -22,21 +22,15 @@ public class AuthController {
         this.userService = userService;
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  Entry point                                                        */
-    /* ------------------------------------------------------------------ */
-
     @GetMapping("/")
     public String index(HttpSession session) {
         if (session.getAttribute("userId") != null) {
             return "redirect:/home";
         }
-        return "redirect:/register";
+        return "redirect:/login";
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  REGISTRATION                                                       */
-    /* ------------------------------------------------------------------ */
+    /* ------------------------- REGISTER ------------------------- */
 
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
@@ -50,34 +44,27 @@ public class AuthController {
                            @RequestParam(name = "confirmPassword", required = false) String confirmPassword,
                            RedirectAttributes redirectAttributes) {
 
-        // 1. Do the two passwords match?
         if (user.getPassword() != null && !user.getPassword().isEmpty()
                 && !user.getPassword().equals(confirmPassword)) {
             bindingResult.rejectValue("password", "password.mismatch", "Passwords do not match");
         }
 
-        // 2. Is the email already taken?
         if (user.getEmail() != null && !user.getEmail().isBlank()
                 && userService.emailExists(user.getEmail())) {
             bindingResult.rejectValue("email", "email.exists", "This email is already registered");
         }
 
-        // 3. Any error (including @NotBlank / @Email / @Size)? Show the form again.
         if (bindingResult.hasErrors()) {
             return "register";
         }
 
-        // 4. Hash the password and save.
         userService.register(user);
-
         redirectAttributes.addFlashAttribute("successMessage",
                 "Registration successful! Please log in.");
         return "redirect:/login";
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  LOGIN                                                              */
-    /* ------------------------------------------------------------------ */
+    /* ------------------------- LOGIN ------------------------- */
 
     @GetMapping("/login")
     public String showLoginPage() {
@@ -97,36 +84,18 @@ public class AuthController {
         }
 
         User user = userService.login(email, password);
-
         if (user == null) {
             model.addAttribute("error", "Invalid email or password");
             model.addAttribute("email", email);
             return "login";
         }
 
-        // Create the authenticated session.
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
-
         return "redirect:/home";
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  HOME (protected)                                                   */
-    /* ------------------------------------------------------------------ */
-
-    @GetMapping("/home")
-    public String home(HttpSession session, Model model) {
-        if (session.getAttribute("userId") == null) {
-            return "redirect:/login";       // not logged in
-        }
-        model.addAttribute("username", session.getAttribute("username"));
-        return "home";
-    }
-
-    /* ------------------------------------------------------------------ */
-    /*  LOGOUT                                                             */
-    /* ------------------------------------------------------------------ */
+    /* ------------------------- LOGOUT ------------------------- */
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {

@@ -7,14 +7,43 @@
 </head>
 <body>
 
-<div class="card">
+<div class="card card-wide">
     <h1>Welcome!</h1>
 
     <p class="greeting">
         Hello, <span th:text="${username}">username</span>!
     </p>
 
-    <form th:action="@{/logout}" method="post">
+    <p class="error" th:if="${error}" th:text="${error}">Error</p>
+
+    <!-- Add new task -->
+    <form th:action="@{/todos/add}" method="post" class="todo-form">
+        <input type="text" name="title" placeholder="What needs to be done?" autocomplete="off" maxlength="200">
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Task list -->
+    <ul class="todo-list" th:if="${not #lists.isEmpty(todos)}">
+        <li th:each="todo : ${todos}"
+            th:classappend="${todo.completed} ? 'done' : ''">
+
+            <form th:action="@{/todos/{id}/toggle(id=${todo.id})}" method="post" class="inline-form">
+                <button type="submit" class="checkbox-btn" title="Toggle">
+                    <span th:text="${todo.completed} ? '✓' : '○'">○</span>
+                </button>
+            </form>
+
+            <span class="todo-title" th:text="${todo.title}">Task</span>
+
+            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" class="inline-form">
+                <button type="submit" class="delete-btn" title="Delete">✕</button>
+            </form>
+        </li>
+    </ul>
+
+    <p class="empty" th:if="${#lists.isEmpty(todos)}">No tasks yet. Add one above!</p>
+
+    <form th:action="@{/logout}" method="post" class="logout-form">
         <button type="submit">Logout</button>
     </form>
 </div>
